@@ -1,10 +1,11 @@
-Codex CMDb
-==========
+The Codex CMDB
+==============
 
 MVP for Temp Sensor
+-------------------
 
-Discover
---------
+### 1. Discover
+
 * /discover  [POST]
 * mcast "discover"
 
@@ -17,8 +18,7 @@ Accept a JSON record from the discoverer and return a href to the resource.
       "port" : port-number,
     }
 
-Get Config
-----------
+### 2. Get Config
 
 * /resource/<uuid>/config   [GET]
 
@@ -40,8 +40,8 @@ Return the JSON of the full config for the resource.
 2nd Iteration Features
 ----------------------
 
-Get Resource
-------------
+### Get Resource
+
 * /resource/<uuid> [GET]
 
 Q: What all goes in this.
