@@ -35,6 +35,18 @@ Return the JSON of the full config for the resource.
       }
     }
 
+### 3. Put Config
+
+* /resource/<uuid>/config [PUT]
+
+### 4. Delete Resource
+
+* /resource/<uuid> [DEL]
+
+### 5. healthz - monitoring resource
+
+* /healthz [GET]
+
 ----
 
 2nd Iteration Features

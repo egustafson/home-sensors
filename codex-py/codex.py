@@ -4,6 +4,7 @@
 ##
 
 from flask import Flask
+from flask import jsonify
 
 app = Flask(__name__)
 
@@ -28,20 +29,26 @@ def get_config(rid):
 
 ## ##########
 
-@app.route("/link", methods=['GET']))
+@app.route("/link", methods=['GET'])
 def links():
     return "list links"
 
-@app.route("link/<uuid:lid>", methods=['GET'])
+@app.route("/link/<uuid:lid>", methods=['GET'])
 def get_link(lid):
     return "link({})".format(lid)
 
 ## ##########
 
-@app.route("query", methods=['POST'])
+@app.route("/query", methods=['POST'])
 def query():
     return "query cmdb"
 
-@app.route("lookup", methods=['POST'])
+@app.route("/lookup", methods=['POST'])
 def lookup():
     return "cmdb resource lookup."
+
+## ####
+
+@app.route("/healthz", methods=['GET'])
+def healthz():
+    return jsonify(status="OK")
