@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """App factory for Flask"""
 
+##
+## -- DEPRECATED in favor of webapp.py --
+##
+
 from flask import Flask
 
 from codex import view, healthz
