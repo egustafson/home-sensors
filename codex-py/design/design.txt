@@ -1,0 +1,65 @@
+RESTful Objects
+===============
+
+* Resource -- top level Managed Object
+* Link     -- associations between Resources (directed)
+* Template -- type like structure of Resources (mix-in)
+
+* Config   -- a configuration.
+
+Resource (ManagedObject)
+------------------------
+
+* id:  UUID, internally generated
+* identities: [ identity keys ]
+  - keys reference elements in the config
+  - possibly jsonpath to keys in config
+  - use the most operational config, identity should be used
+    while the object is operational.
+  - set through the '_idenitities' config attr
+* op-config:  operational config (as-operated)
+* agent-state:  run-time state received from the operating agent
+  - null if the resource's agent is not active, or not provided
+  - non-null ==> resource is active
+  - a mechanism(s) for checking livelyness should be employed
+    - healthz attr: a URL?  (other healthz endpoint / protocol)
+  - Validation:  all attrs that match name/path with op-config should
+    also match values in op-config.
+* templs: [ ordered vector of Template records ]
+  - earlier templates make precidence over later records
+  - think: mix-in classes
+
+
+
+Configuration lifecycle with in a Resource/ManagedObject
+  1. staged
+  2. validated   (successfully promoted w/ validate-config oper.)
+  3. operational (successfully promoted w/ deploy-config oper.)
+  4. historical  (all past configs accessable via ver number.)
+  -  it should be possible to stage any existing config version.
+
+
+Config
+------
+
+### Meta-Attributes
+
+_ver(integer): A monotonically increasing integer assigned when
+               a config is accepted.  Unmutable.
+
+_ts(ISO-8601): The time the config was admitted into the system.
+               Unmutable.
+
+_prev-ver:     IFF cloned from a previous version, that version.
+
+_identity(vec): A vecotor if strings.  The strings may be simple
+                values that identify regular config keys, or they
+                may be a JSONPath expression that resolves to a
+                single element in the config.
+
++link-type:    A vector of config keys that hold UUID values or
+               vectors of UUID values that are the linked objects.
+
+               thought: it would be possible to cross-couple
+               CMDB's by allowing URL's into other CMDBs
+               (i.e. domains)
