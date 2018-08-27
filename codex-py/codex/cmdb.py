@@ -83,8 +83,10 @@ class CMDB(object):
 
 ###
 
-#_cmdb = CMDB()
-#
-#def get_CMDB():
-#    return _cmdb
-#
+_cmdb = None
+
+def get_cmdb(id=None):
+    if _cmdb is None:
+        _cmdb = CMDB()
+    return _cmdb
+
