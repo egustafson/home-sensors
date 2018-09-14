@@ -17,7 +17,7 @@ class Resource(object):
         self.id = id
         self._cfg = None
         self._cfg_ver = 0
-        self.identity = None
+        self._identity = None
 
     @property
     def meta(self):
@@ -58,6 +58,13 @@ class CMDB(object):
     def __init__(self):
         self.resources = { }
         self.links = { }
+
+    def reset(self):
+        self.resources = { }
+        self.links = { }
+
+    def list(self):
+        return list(self.resources.keys())
 
     def set_config(self, resource_id, config):
         r = self.resources.get(resource_id)

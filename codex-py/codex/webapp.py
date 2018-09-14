@@ -16,7 +16,7 @@ _cmdb = CMDB()
 
 class ResourceList(RESTResource):
     def get(self):
-        abort(500, message="TBD - no implementation")
+        return jsonify(_cmdb.list())
 
 class Discover(RESTResource):
 
@@ -40,7 +40,10 @@ class Config(RESTResource):
         return jsonify(cfg)
 
     def put(self, rid):
+        print("PUT: {}".format(rid))
         cfg = request.get_json()
+        if cfg is None:
+            abort(500, message="no json in PUT body")
         print(cfg)
         meta = _cmdb.set_config(rid, cfg)
         if meta is None:
@@ -55,7 +58,10 @@ class Link(RESTResource):
     def get(self, lid):
         abort(500, message="TBD - no implementation")
 
-
+class Reset(RESTResource):
+    def get(self):
+        _cmdb.reset()
+        return jsonify( {"status": "ok"} )
 
 def create_app(config_object=ProdConfig):
     """Flask applicaton factory
@@ -70,6 +76,7 @@ def create_app(config_object=ProdConfig):
     restapi.add_resource(Resource, '/resource/<uuid:rid>')
     restapi.add_resource(Config, '/resource/<uuid:rid>/config')
     restapi.add_resource(Discover, '/discover')
+    restapi.add_resource(Reset, '/reset')
     ##
     ## ...
     ##
