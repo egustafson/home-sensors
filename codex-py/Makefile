@@ -13,6 +13,9 @@ test:
 package:
 	python setup.py sdist
 
+docker:
+	docker build -t codex .
+
 release:
 	@echo "UNIMPLEMENTED - release"
 	@echo "--> 'python setup.py sdist register upload'"
