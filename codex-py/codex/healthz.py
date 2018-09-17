@@ -9,7 +9,7 @@ from flask import jsonify
 class Healthz():
 
     def status(self):
-        return { 'status': "OK" }
+        return { 'status': "ok" }
 
 ###
 

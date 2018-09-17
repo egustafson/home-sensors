@@ -14,9 +14,14 @@ from codex.cmdb import CMDB
 _cmdb = CMDB()
 
 
-class ResourceList(RESTResource):
+class ConfigItems(RESTResource):
     def get(self):
         return jsonify(_cmdb.list())
+
+    def post(self):
+        config = request.get_json()
+        meta = _cmdb.add_config(config)
+        return jsonify(meta)
 
 class Discover(RESTResource):
 
@@ -24,19 +29,19 @@ class Discover(RESTResource):
         identity = request.get_json()
         meta = _cmdb.discover(identity)
         if meta is None:
-            abort(404, message="no resource with that identity discovered")
+            abort(404, message="no ConfigItem with that identity discovered")
         return jsonify(meta)
 
-class Resource(RESTResource):
+class ConfigItem(RESTResource):
     def get(self, rid):
-        abort(500, message="--*-- MISSING IMPL --*-- requested resource, (id={}), does not exist.".format(rid))
+        abort(500, message="--*-- MISSING IMPL --*-- requested ConfigItem, (id={}), does not exist.".format(rid))
 
 
 class Config(RESTResource):
     def get(self, rid):
         cfg = _cmdb.get_config(rid)
         if cfg is None:
-            abort(404, message="requested resource, (id={}), does not exist.".format(rid))
+            abort(404, message="requested ConfigItem, (id={}), does not exist.".format(rid))
         return jsonify(cfg)
 
     def put(self, rid):
@@ -72,9 +77,9 @@ def create_app(config_object=ProdConfig):
     webapp.url_map.strict_slashes = False
     webapp.config.from_object(config_object)
 
-    restapi.add_resource(ResourceList, '/resource')
-    restapi.add_resource(Resource, '/resource/<uuid:rid>')
-    restapi.add_resource(Config, '/resource/<uuid:rid>/config')
+    restapi.add_resource(ConfigItems, '/ci')
+    restapi.add_resource(ConfigItem, '/ci/<uuid:rid>')
+    restapi.add_resource(Config, '/ci/<uuid:rid>/config')
     restapi.add_resource(Discover, '/discover')
     restapi.add_resource(Reset, '/reset')
     ##
@@ -82,6 +87,6 @@ def create_app(config_object=ProdConfig):
     ##
 
 #    webapp.register_blueprint(view.blueprint)
-#    webapp.register_blueprint(healthz.blueprint)
+    webapp.register_blueprint(healthz.blueprint)
     return webapp
 
