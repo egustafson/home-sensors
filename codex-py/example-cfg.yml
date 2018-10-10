@@ -1,0 +1,12 @@
+---
+_type: sensor
+_identity: [ serial ]
+serial: 10102
+sensor:
+  mqtt-topic: elfwerks/stoneglen/env
+  sample-period: 60
+mqtt:
+  client-name: esp8266-test
+  server-addr: 10.3.4.169    # host: influx.elfwerks
+logging:
+  mqtt-topic: elfwerks/stoneglen/log

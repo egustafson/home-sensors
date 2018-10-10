@@ -2,6 +2,7 @@
 """ Multicast (discovery) listener """
 
 import socket
+import struct
 from socketserver import DatagramRequestHandler, UDPServer
 
 
@@ -9,6 +10,13 @@ MCAST_ADDR = "239.0.0.1"
 MCAST_PORT = 23901
 MCAST_TTL  = 5          ## no more than 5 hops through routers
 
+## 19 Sep 2018 -- Note
+##
+##  I am returning to the mcast section of this.  After review, this code dev
+## came after the work in tools/mcast.py and is my preferred strategy.
+## There may be some insight from the tools/mcast.py code that hasn't been
+## factored in so review.
+##
 
 
 class McastHandler(socketserver.DatagramRequestHandler):

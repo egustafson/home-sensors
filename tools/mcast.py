@@ -41,7 +41,7 @@ class Mcast:
 
     def recv(self):
         (rx, addr) = self.sock.recvfrom(8192)
-        rx = json.loads(rx)
+        rx = json.loads(rx.decode('utf-8'))
         rx['_recvfrom'] = {}
         rx['_recvfrom']['addr'] = addr[0]
         rx['_recvfrom']['port'] = addr[1]

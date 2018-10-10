@@ -1,0 +1,31 @@
+oid1:
+  _type: sensor
+  _identity: [ serial ]
+  serial: 10102
+  sensor:
+    mqtt-topic: elfwerks/stoneglen/env
+    sample-period: 60
+  mqtt:
+    client-name: esp8266-test
+    server-addr: 10.3.4.169    # host: influx.elfwerks
+  logging:
+    mqtt-topic: elfwerks/stoneglen/log
+
+oid2:
+  _type: ingestor
+  _identity: [ id ]
+  id: intestor0
+  mqtt:
+    client-name: ingestor0
+    server-addr: 10.3.4.169
+  influx:
+    username: influx-user
+    password: influx-pass
+    server-addr: 10.3.4.169:1234
+  streams:
+    - env:
+        topic: elfwerks/stoneglen/env
+        dest:  influx-storage-descriptor
+    - logs:
+        topic: elfwerks/stoneglen/log
+        dest:  stdout
