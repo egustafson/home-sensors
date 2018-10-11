@@ -25,6 +25,9 @@ local-install:
 	@echo ""
 	python setup.py develop --user
 
+dev-install:
+	pip install --editable .
+
 install:
 ## only run install if inside a virtual environment (python virtual_env)
 	@if [ "${VIRTUAL_ENV}x" != "x" ]; then \

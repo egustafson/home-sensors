@@ -16,7 +16,9 @@ def print_json(j):
 
 @click.group()
 @click.pass_context
-def cli(ctx):
+def cli(ctx=None):
+    if ctx is  None:
+        ctx = {}
     ctx.obj['CLIENT'] = Client()
 
 @click.command()
@@ -112,6 +114,3 @@ cli.add_command(get)
 cli.add_command(put)
 cli.add_command(discover)
 cli.add_command(healthz)
-
-if __name__ == '__main__':
-    cli(obj={})
