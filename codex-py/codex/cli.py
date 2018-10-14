@@ -16,14 +16,9 @@ def print_json(j):
 
 @click.group()
 @click.pass_context
-def cli(ctx=None):
-    if ctx is  None:
-        ctx = {}
+def cli(ctx):
+    ctx.ensure_object(dict)
     ctx.obj['CLIENT'] = Client()
-
-@click.command()
-def info():
-    click.echo("Codex-CMDB CLI")
 
 @click.command()
 def reset():
@@ -93,20 +88,44 @@ def healthz(ctx):
     r = client.healthz()
     print_json(r)
 
+@click.command()
+@click.pass_context
+def dump(ctx):
+    client = ctx.obj["CLIENT"]
+    dd = []
+    r = client.list()
+    for cid in r:
+        ci = client.get_config(cid)
+        dd.append(ci)
+    print_json(dd)
+
+@click.command()
+@click.argument('loadfile', type=click.File('r'))
+@click.pass_context
+def load(ctx, loadfile):
+    client = ctx.obj["CLIENT"]
+    loaddata = yaml.load(loadfile)
+    for ci in loaddata:
+        cid = ci.get("_id", None)
+        if cid is not None:
+            client.update_config(cid, ci)
+        else:
+            client.add_config(ci)
+    click.echo("OK")
+
 ## Commands
 #
 # discover "{json: value}"
+# list     ## return a list of the CI id's
 # get      <oid>
-# post     single-config.yml
 # put      single-config.yml <oid>
-# del      <oid>
+# create   single-config.yml
+## del      <oid>
 # healthz
 #
-# list     ## return a list of the CI id's
-# getci    <oid>
-#
+# dump     # dump the entire CMDB as vector of CI's
+# load     dump-file.json
 
-cli.add_command(info)
 cli.add_command(reset)
 cli.add_command(list)
 cli.add_command(create)
@@ -114,3 +133,5 @@ cli.add_command(get)
 cli.add_command(put)
 cli.add_command(discover)
 cli.add_command(healthz)
+cli.add_command(dump)
+cli.add_command(load)

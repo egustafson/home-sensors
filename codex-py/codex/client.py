@@ -37,6 +37,8 @@ class Client:
         """Return the 'Operating' Config of the CI matching 'identity' (a dict)."""
         url = self.base_url + "/discover"
         r = requests.post(url, json=pattern, timeout=self.timeout)
+        if r.status_code == 404:
+            return {}
         r.raise_for_status()
         return r.json()
 
