@@ -18,9 +18,22 @@ Accept a JSON record from the discoverer and return a href to the resource.
       "port" : port-number,
     }
 
-### 2. Get Config
+### 2. List Configuration Items (CI's)
 
-* /resource/<uuid>/config   [GET]
+* /ci  [GET]
+
+Return a list of CI uuid's
+
+    [
+      16e448fa-cffc-11e8-9353-000c29b7f6e5
+      c6e448fa-cffc-11e8-9353-000c29b7f6e5
+      26e448fa-cffc-11e8-9353-000c29b7f6e5
+      36e448fa-cffc-11e8-9353-000c29b7f6e5
+    ]
+
+### 3. Get Config
+
+* /ci/\<uuid\>/config   [GET]
 
 Return the JSON of the full config for the resource.
 
@@ -35,15 +48,15 @@ Return the JSON of the full config for the resource.
       }
     }
 
-### 3. Put Config
+### 4. Put Config
 
-* /resource/<uuid>/config [PUT]
+* /ci/\<uuid\>/config [PUT]
 
-### 4. Delete Resource
+### 5. Delete Configuration Item (CI)
 
-* /resource/<uuid> [DEL]
+* /ci/\<uuid\> [DEL]
 
-### 5. healthz - monitoring resource
+### 6. healthz - monitoring resource
 
 * /healthz [GET]
 
@@ -52,9 +65,9 @@ Return the JSON of the full config for the resource.
 2nd Iteration Features
 ----------------------
 
-### Get Resource
+### Get Configuration Item (CI)
 
-* /resource/<uuid> [GET]
+* /resource/\<uuid\> [GET]
 
 Q: What all goes in this.
 * the config should be the 'config' attribute.
