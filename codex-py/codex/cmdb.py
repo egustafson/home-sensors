@@ -88,8 +88,17 @@ class CMDB(object):
 
 _cmdb = None
 
-def get_cmdb(id=None):
+
+def get_cmdb():
+    global _cmdb
     if _cmdb is None:
-        _cmdb = CMDB()
+        init_cmdb()
     return _cmdb
 
+
+def init_cmdb(cfg=None):
+    global _cmdb
+    if _cmdb is not None:
+        raise RuntimeError("CMDB already initialized.")
+    _cmdb = CMDB()
+    return True

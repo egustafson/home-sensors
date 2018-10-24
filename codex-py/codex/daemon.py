@@ -6,6 +6,7 @@ import logging
 
 from flask.helpers import get_debug_flag
 
+from codex.cmdb import init_cmdb
 from codex.webapp import create_app
 from codex.settings import DevConfig, ProdConfig
 
@@ -37,6 +38,7 @@ def main():
         load_config()
         config_logging()
         logger.info("Codex CMDB running.")
+        init_cmdb()
         start_webapp()
     except:
         logger.exception("Unanticipated exception - shutdown.")

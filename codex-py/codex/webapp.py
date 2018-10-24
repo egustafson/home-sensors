@@ -9,25 +9,23 @@ from flask_restful import Resource as RESTResource
 
 from codex import view, healthz
 from codex.settings import ProdConfig
-from codex.cmdb import CMDB
-
-_cmdb = CMDB()
+from codex.cmdb import get_cmdb
 
 
 class ConfigItems(RESTResource):
     def get(self):
-        return jsonify(_cmdb.list())
+        return jsonify(get_cmdb().list())
 
     def post(self):
         config = request.get_json()
-        meta = _cmdb.add_config(config)
+        meta = get_cmdb().add_config(config)
         return jsonify(meta)
 
 class Discover(RESTResource):
 
     def post(self):
         identity = request.get_json()
-        meta = _cmdb.discover(identity)
+        meta = get_cmdb().discover(identity)
         if meta is None:
             abort(404, message="no ConfigItem with that identity discovered")
         return jsonify(meta)
@@ -39,7 +37,7 @@ class ConfigItem(RESTResource):
 
 class Config(RESTResource):
     def get(self, rid):
-        cfg = _cmdb.get_config(rid)
+        cfg = get_cmdb().get_config(rid)
         if cfg is None:
             abort(404, message="requested ConfigItem, (id={}), does not exist.".format(rid))
         return jsonify(cfg)
@@ -50,7 +48,7 @@ class Config(RESTResource):
         if cfg is None:
             abort(500, message="no json in PUT body")
         print(cfg)
-        meta = _cmdb.set_config(rid, cfg)
+        meta = get_cmdb().set_config(rid, cfg)
         if meta is None:
             abort(500, message="error setting config.")
         return jsonify(meta)
@@ -65,7 +63,7 @@ class Link(RESTResource):
 
 class Reset(RESTResource):
     def get(self):
-        _cmdb.reset()
+        get_cmdb().reset()
         return jsonify( {"status": "ok"} )
 
 def create_app(config_object=ProdConfig):
