@@ -20,8 +20,31 @@
 ##
 ##
 
+from collections.abc import Mapping, MutableMapping
 
-class Config(dict): pass
+## Note - there should be an IN-mutable base class, but the
+##  code using class 'Config' does not treat the Config as
+##  an inmutable object -- fix and replace class Config with
+##  ConfigDO, and then make it a 'Mapping' and derive a
+##  'State' class from MutableMapping.
+
+class ConfigDO(MutableMapping):
+    def __init__(self, *args, **kwargs):
+        self._data = dict(*args, **kwargs)
+    def __getitem__(self, key):
+        return self._data[key]
+    def __setitem__(self, key, value):
+        self._data[key] = value
+    def __delitem__(self, key):
+        del self._data[key]
+    def __iter__(self):
+        return iter(self._data)
+    def __len__(self):
+        return len(self._data)
+
+class Config(ConfigDO): pass
+
+#class Config(dict): pass
 """ A configuration object
       - initially a dict (a hack).
       - see comments above.
