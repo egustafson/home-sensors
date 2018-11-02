@@ -21,6 +21,7 @@
 ##
 
 from collections.abc import Mapping, MutableMapping
+from collections.abc import Sequence
 
 ## Note - there should be an IN-mutable base class, but the
 ##  code using class 'Config' does not treat the Config as
@@ -28,7 +29,7 @@ from collections.abc import Mapping, MutableMapping
 ##  ConfigDO, and then make it a 'Mapping' and derive a
 ##  'State' class from MutableMapping.
 
-class ConfigDO(MutableMapping):
+class ConfigMap(MutableMapping):
     def __init__(self, *args, **kwargs):
         self._data = dict(*args, **kwargs)
     def __getitem__(self, key):
@@ -42,10 +43,17 @@ class ConfigDO(MutableMapping):
     def __len__(self):
         return len(self._data)
 
-class Config(ConfigDO): pass
+class ConfigList(Sequence):    ## Sequence <= list
+    pass
 
-#class Config(dict): pass
-""" A configuration object
-      - initially a dict (a hack).
-      - see comments above.
-"""
+
+class Config(ConfigMap): pass
+## ?? - does Config need anything beyond ConfigMap?
+
+## ########## Random ideas below ######
+
+class ConfigItem: pass
+    ## holds versions of Config + tag->_ver + ...
+
+class ManagedObject: pass
+    # 
