@@ -32,7 +32,7 @@ class TestCMDB(unittest.TestCase):
         t_resource_id = uuid.uuid1()
         meta = self.cmdb.set_config(t_resource_id, t_config)
         self.assertIsNotNone(meta)
-        self.assertTrue( meta['id'] == t_resource_id )
+        self.assertTrue( meta['_id'] == t_resource_id )
         #
         # test - get  (what was put)
         #
@@ -51,6 +51,6 @@ class TestCMDB(unittest.TestCase):
         print('identity: {}'.format(identity))
         discovered_meta = self.cmdb.discover( identity )
         self.assertIsNotNone(discovered_meta)
-        self.assertEqual(discovered_meta['id'], created_meta['id'])
+        self.assertEqual(discovered_meta['_id'], created_meta['_id'])
 
 
