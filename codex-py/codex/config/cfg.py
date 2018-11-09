@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-""" CMDB Config object """
 
 ## Design notes & thoughts ##############################
 ##
@@ -47,13 +46,28 @@ class ConfigList(Sequence):    ## Sequence <= list
     pass
 
 
-class Config(ConfigMap): pass
-## ?? - does Config need anything beyond ConfigMap?
+class Config(ConfigMap):
+    def __init__(self, *args, **kwargs):
+        self._validated = False
+        self._dirty = False
+        super().__init__(*args, **kwargs)
+    @property
+    def dirty(self):
+        return self._dirty
+    @property
+    def validated(self):
+        return self._validated
 
-## ########## Random ideas below ######
 
-class ConfigItem: pass
-    ## holds versions of Config + tag->_ver + ...
 
-class ManagedObject: pass
-    # 
+class Cref(ConfigMap): pass
+    # holds a reference to a config / CI
+    #
+    # { # Cref
+    #   id:  <config/CI-uuid>
+    #   tag: <ci-tag>  ## optional
+    #   rel: "text-relationship-descriptor" # optional
+    #   obj: { object referenced -- caching / python 'ref' }
+    #   ...???...
+    # }
+
