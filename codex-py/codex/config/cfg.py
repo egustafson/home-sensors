@@ -19,34 +19,10 @@
 ##
 ##
 
-from collections.abc import Mapping, MutableMapping
-from collections.abc import Sequence
+from codex.config.prop import PropMap
+from codex.config.prop import PropList
 
-## Note - there should be an IN-mutable base class, but the
-##  code using class 'Config' does not treat the Config as
-##  an inmutable object -- fix and replace class Config with
-##  ConfigDO, and then make it a 'Mapping' and derive a
-##  'State' class from MutableMapping.
-
-class ConfigMap(MutableMapping):
-    def __init__(self, *args, **kwargs):
-        self._data = dict(*args, **kwargs)
-    def __getitem__(self, key):
-        return self._data[key]
-    def __setitem__(self, key, value):
-        self._data[key] = value
-    def __delitem__(self, key):
-        del self._data[key]
-    def __iter__(self):
-        return iter(self._data)
-    def __len__(self):
-        return len(self._data)
-
-class ConfigList(Sequence):    ## Sequence <= list
-    pass
-
-
-class Config(ConfigMap):
+class Config(PropMap):
     def __init__(self, *args, **kwargs):
         self._validated = False
         self._dirty = False
@@ -60,7 +36,7 @@ class Config(ConfigMap):
 
 
 
-class Cref(ConfigMap): pass
+class Cref(PropMap): pass
     # holds a reference to a config / CI
     #
     # { # Cref
