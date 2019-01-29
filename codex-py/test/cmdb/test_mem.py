@@ -18,13 +18,13 @@ class TestMemCMDB(unittest.TestCase):
 
     def test_ci_operations(self):
         cmdb = MemoryCMDB(config)
-        self.assertEqual( len(cmdb.get_ci_list()), 0 )
-        oid = cmdb.create_ci(config)
+        self.assertEqual( len(cmdb.ci_list()), 0 )
+        oid = cmdb.ci_new(config)
         # print("oid = {}".format(oid))
-        cilist = cmdb.get_ci_list()
+        cilist = cmdb.ci_list()
         self.assertEqual( len(cilist), 1)
         self.assertEqual( oid, cilist[0] )
-        cfg = cmdb.get_config(oid, 0)
+        cfg = cmdb.ci_get(oid, 0)
         # print("\ncfg = {")
         # for (k,v) in cfg.items():
         #     print("  {}: {},".format(k,v))

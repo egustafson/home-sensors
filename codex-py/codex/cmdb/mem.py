@@ -105,75 +105,75 @@ class MemoryCMDB(object):
         self._indexDao = IndexDAO()
         self._mobjsDao = MObjsDAO()
 
-    def get_ver(self, oid, tag="_head"):
+    def _version(self, oid, tag="_head"):
         if isinstance(tag, int):
             return tag
         ver = -1
         if len(tag) < 1 or tag == "_head":
-            ver = self._configsDao.get_count() - 1
+            ver = self._configsDao.get_count(oid) - 1
         else:
             ver = self._tagsDao.get_version(oid, tag)
         if ver < 0:
             return None
         return ver
 
-    def get_ci_list(self):
+    def ci_list(self):
         return self._configsDao.get_list()
 
-    def create_ci(self, config):
+    def ci_get(self, oid, tag="_head"):
+        v = self._version(oid, tag)
+        if v != None:
+            return self._configsDao.get_config(oid, v)
+        #
+        # Log a problem.  Invalid tag/version or OID
+        #
+        return None
+
+    def ci_new(self, config):
         oid = uuid.uuid1()
         self._configsDao.append(oid, config)
         return oid
 
-    def get_ci(self, oid):
-        #
-        # TODO
-        #
-        return None
-
-    def add_config(self, oid, config):
+    def ci_update(self, oid, config):
         self._configsDao.append(oid, config)
         return ver
 
-    def get_config(self, oid, ver):
-        return self._configsDao.get_config(oid, ver)
-
-    def search_ci(self, search_term):
+    def ci_search(self, search_term):
         #
         # TODO
         #
         return None
 
-    def discover_mo(self, discover_term):
+    def mo_discover(self, discover_term):
         #
         # TODO
         #
         return None
 
-    def get_mo_list(self):
+    def mo_list(self):
         return self._mobjsDao.get_list()
 
-    def get_mo(self, oid):
+    def mo_get(self, oid):
         state = self._mobjsDao.get_state(oid)
         if state is None:
             return None
         mo = ManagedObject(oid, oid)
         mo.state = state
-        ver = self.get_ver(oid, self._oper_tag)
+        ver = self._version(oid, self._oper_tag)
         if ver != None:
             cfg = self._configsDao.get_config(oid, ver)
             mo.config = cfg
         return mo
 
-    def set_mo_state(self, oid, state):
+    def mo_set(self, oid, state):
         self._mobjsDao.set_state(oid, state)
         return self.get_mo(oid)
 
-    def update_mo_state(self, oid, state):
+    def mo_update(self, oid, state):
         #
         # TODO
         #
         return self.get_mo(oid)
 
-    def delete_mo_state(self, oid):
+    def mo_destroy(self, oid):
         self._mobjsDao.clear(oid)
