@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" UnitTest for config objects """
+""" UnitTest load() of config objects """
 
 import unittest
 
@@ -14,7 +14,7 @@ logging:
   mqtt-topic: logging-topic
 """
 
-class TestConfig(unittest.TestCase):
+class TestConfigLoad(unittest.TestCase):
 
     def test_load(self):
         c = load(TEST_CONFIG)

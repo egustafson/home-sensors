@@ -28,6 +28,27 @@ from collections.abc import Sequence, MutableSequence
 ##  ConfigDO, and then make it a 'Mapping' and derive a
 ##  'State' class from MutableMapping.
 
+class PropPath:
+    def __init__(self, path):
+        #
+        # Validate path string, split and put in []
+        #
+        self.path = []
+        self.path[0] = path
+
+    def next():
+        return self.path[0]
+
+    def next_is_digit():
+        return isinstance(self.path[0], int)
+
+    def remainder():
+        if len(self.path) > 1:
+            return self.path[1:]
+        else:
+            return None
+
+
 class PropMap(MutableMapping):
     def __init__(self, *args, **kwargs):
         self._data = dict(*args, **kwargs)
@@ -41,6 +62,83 @@ class PropMap(MutableMapping):
         return iter(self._data)
     def __len__(self):
         return len(self._data)
+
+
+import re
+from collections import Iterable
+
+kre = re.compile("^([\w\-]+)(\.([\w\-]+))*$")
+
+class PropMap2(MutableMapping):
+
+    def __init__(self, *args, **kwargs):
+#        print("PropMap2.__init__")
+        self._data = dict()
+        for a in args:
+            if isinstance(a, Mapping):
+                for (k,v) in a.items():
+                    self.__setitem__(k,v)
+            elif isinstance(a, Sequence):
+                for (k,v) in a:
+                    self.__setitem__(k,v)
+        for (k,v) in kwargs:
+            self.__setitem__(k,v)
+
+    def _splitkey(self, key):
+        r = kre.match(key)
+        if r is None:
+            raise KeyError("Invalid key, '{}'".format(key))
+        k = key.split(".", 1)
+        if len (k) < 1:
+            raise KeyError(key)
+        if len(k) > 1:
+            return (k[0], k[1])
+        return (k[0], None)
+
+    def __getitem__(self, key):
+#        print("getting: {}".format(key))
+        (k, sk) = self._splitkey(key)
+        if sk:
+#            print("get recursing:  k='{}', sk='{}'".format(k, sk))
+            return self._data[k][sk]
+        return self._data[k]
+
+    def __setitem__(self, key, value):
+#        print("setting:  {}".format(key))
+        (k, sk) = self._splitkey(key)
+        v = value
+        if isinstance(value, dict):
+            v = PropMap2(value)
+        if sk:
+            if k not in self._data:
+                self._data[k] = PropMap2()
+                #print("created sub-map")
+            self._data[k][sk] = v
+        else:
+            self._data[k] = v
+
+    def __delitem__(self, key):
+        del self._data[key]
+
+    def __iter__(self):
+        return iter(self._data)
+
+    def __len__(self):
+        return len(self._data)
+
+    def __repr__(self):
+        return dict.__repr__(dict(self))
+
+    def dump(self, prefix=''):
+        for (k, v) in self._data.items():
+            key = k
+            if len(prefix) > 0:
+                key = ".".join((prefix, k))
+            if isinstance(v, PropMap2):
+                v.dump(key)
+            else:
+                print("{}: {}".format(key, v))
+
 
 class PropList(MutableSequence):    ## Sequence <= list
     def __init__(self, *args):

@@ -7,7 +7,7 @@ import uuid
 from codex.cmdb import CMDB
 
 
-class TestCMDB(unittest.TestCase):
+class TestOldCMDB(unittest.TestCase):
 
     def setUp(self):
         self.cmdb = CMDB()
@@ -19,12 +19,7 @@ class TestCMDB(unittest.TestCase):
             'test-key': 'test-value'
         }
 
-    def test_python3(self):
-        import sys
-        major, minor, micro, releaselevel, serial = sys.version_info
-        self.assertGreaterEqual( major, 3 )
-
-    def test_put_get_config(self):
+    def test_old_put_get_config(self):
         #
         # test - put
         #
@@ -41,14 +36,14 @@ class TestCMDB(unittest.TestCase):
         self.assertEqual(stored_config, t_config)
 
 
-    def test_discover(self):
+    def test_old_discover(self):
         t_config = self.config
         created_meta = self.cmdb.set_config(uuid.uuid1(), t_config)
         self.assertIsNotNone(created_meta)
         #
         serial_no = t_config['_identity']['serial']
         identity = { 'serial': serial_no }
-        print('identity: {}'.format(identity))
+        # print('identity: {}'.format(identity))
         discovered_meta = self.cmdb.discover( identity )
         self.assertIsNotNone(discovered_meta)
         self.assertEqual(discovered_meta['_id'], created_meta['_id'])
