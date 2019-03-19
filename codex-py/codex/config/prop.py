@@ -49,30 +49,15 @@ class PropPath:
             return None
 
 
-class PropMap(MutableMapping):
-    def __init__(self, *args, **kwargs):
-        self._data = dict(*args, **kwargs)
-    def __getitem__(self, key):
-        return self._data[key]
-    def __setitem__(self, key, value):
-        self._data[key] = value
-    def __delitem__(self, key):
-        del self._data[key]
-    def __iter__(self):
-        return iter(self._data)
-    def __len__(self):
-        return len(self._data)
-
-
 import re
 from collections import Iterable
 
 kre = re.compile("^([\w\-]+)(\.([\w\-]+))*$")
 
-class PropMap2(MutableMapping):
+class PropMap(MutableMapping):
 
     def __init__(self, *args, **kwargs):
-#        print("PropMap2.__init__")
+#        print("PropMap.__init__")
         self._data = dict()
         for a in args:
             if isinstance(a, Mapping):
@@ -108,10 +93,10 @@ class PropMap2(MutableMapping):
         (k, sk) = self._splitkey(key)
         v = value
         if isinstance(value, dict):
-            v = PropMap2(value)
+            v = PropMap(value)
         if sk:
             if k not in self._data:
-                self._data[k] = PropMap2()
+                self._data[k] = PropMap()
                 #print("created sub-map")
             self._data[k][sk] = v
         else:
@@ -135,7 +120,7 @@ class PropMap2(MutableMapping):
             key = k
             if len(prefix) > 0:
                 key = ".".join((prefix, k))
-            if isinstance(v, PropMap2):
+            if isinstance(v, PropMap):
                 flat.extend( v._flatten(key) )
             else:
                 flat.append( (key, v) )
@@ -150,7 +135,7 @@ class PropMap2(MutableMapping):
             key = k
             if len(prefix) > 0:
                 key = ".".join((prefix, k))
-            if isinstance(v, PropMap2):
+            if isinstance(v, PropMap):
                 v.dump(key)
             else:
                 print("{}: {}".format(key, v))

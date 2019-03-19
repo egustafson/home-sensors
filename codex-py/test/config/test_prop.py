@@ -15,7 +15,7 @@
 
 import unittest
 
-from codex.config.prop import PropMap2 as PropMap
+from codex.config.prop import PropMap
 from codex.config.prop import PropList
 
 class TestPropMap(unittest.TestCase):

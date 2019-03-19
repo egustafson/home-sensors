@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from codex.config.prop import PropMap2 as PropMap
-from codex.config.prop import PropList as PropList
+from codex.config.prop import PropMap
+from codex.config.prop import PropList
 
 
 tmap = { "k1": "v1",
