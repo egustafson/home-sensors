@@ -129,6 +129,22 @@ class PropMap2(MutableMapping):
     def __repr__(self):
         return dict.__repr__(dict(self))
 
+    def _flatten(self, prefix=''):
+        flat = []
+        for (k, v) in self._data.items():
+            key = k
+            if len(prefix) > 0:
+                key = ".".join((prefix, k))
+            if isinstance(v, PropMap2):
+                flat.extend( v._flatten(key) )
+            else:
+                flat.append( (key, v) )
+        return flat
+
+    def flatten(self):
+        return self._flatten()
+
+
     def dump(self, prefix=''):
         for (k, v) in self._data.items():
             key = k
@@ -153,5 +169,8 @@ class PropList(MutableSequence):    ## Sequence <= list
         return len(self._data)
     def insert(self, i, x):
         self._data.insert(i, x)
+    def flatten(self):
+        ## TBD
+        None
 
 

@@ -35,5 +35,14 @@ try:
 except KeyError as ex:
     print("ex: {}".format(ex))
 
+print("pmap.items():")
+for (k,v) in pmap.items():
+    print("  {}: {}".format(k, v))
+
+print("pmap.flatten():")
+flat = pmap.flatten()
+for (k,v) in flat:
+    print("  {}: {}".format(k, v))
+
 print("")
 pmap.dump()

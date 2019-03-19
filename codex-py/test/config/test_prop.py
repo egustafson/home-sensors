@@ -65,6 +65,29 @@ class TestPropMap(unittest.TestCase):
         for (k,v) in test_dict.items():
             self.assertTrue( (k,v) in mm.items() )
 
+    def test_compound_from_sequence(self):
+        test_vec = (('a.b', 'a-b'), ('a.c', 'a-c'), ('b.d', 'b-d'))
+        mm = PropMap(test_vec)
+        self.assertEqual( len(mm), 2 )
+        self.assertEqual( len(mm['a']), 2)
+        self.assertEqual( len(mm['b']), 1)
+        mm_a = mm['a']
+        self.assertEqual( mm['a.b'], mm_a['b'] )
+        self.assertEqual( mm['a.c'], mm_a['c'] )
+        self.assertEqual( mm['b.d'], mm['b']['d'] )
+        for (k,v) in test_vec:
+            self.assertEqual( mm[k], v )
+            self.assertTrue( (k,v) in mm.items() )
+
+    def test_flatten(self):
+        test_vec = (('a.b', 'a-b'), ('a.c', 'a-c'), ('b.d', 'b-d'),
+                    ('a.d.e.f', 'a-d-e-f'), ('a.d.e.g', 'a-d-e-g'))
+        mm = PropMap(test_vec)
+        flat_list = mm.flatten()
+        self.assertEqual( len(test_vec), len(flat_list) )
+        for (k,v) in test_vec:
+            self.assertTrue( (k,v) in flat_list )
+
 
 class TestPropList(unittest.TestCase):
 
