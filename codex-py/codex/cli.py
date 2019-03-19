@@ -6,23 +6,30 @@ import json
 import requests
 import yaml
 
+import codex.config
 from codex.client import Client
 
-CODEX_URL = "http://localhost:5000"
+DEFAULT_URL = "http://localhost:5000"
 
 def print_json(j):
     click.echo(json.dumps(j, indent=2))
 
 
 @click.group()
+@click.option('-c','--config', default="codex.yml", type=click.File('r'))
 @click.pass_context
-def cli(ctx):
+def cli(ctx, config):
     ctx.ensure_object(dict)
-    ctx.obj['CLIENT'] = Client()
+    cfg = codex.config.load(config)
+    ctx.obj['CONFIG'] = cfg
+    ctx.obj['CLIENT'] = Client(cfg)
 
 @click.command()
-def reset():
-    url = "{}/reset".format(CODEX_URL)
+@click.pass_context
+def reset(ctx):
+    config = ctx.obj["CONFIG"]
+    base_url = config.get('service-url', DEFAULT_URL)
+    url = "{}/reset".format(base_url)
     r = requests.get(url)
     if r.status_code == requests.codes.ok:
         click.echo("OK")

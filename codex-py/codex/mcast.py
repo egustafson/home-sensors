@@ -12,9 +12,9 @@ from codex.cmdb import get_cmdb
 logger = logging.getLogger(__name__)
 
 
-MCAST_ADDR = '239.0.0.1'
-MCAST_PORT = 23901
-MCAST_TTL  = 5          ## no more than 5 hops through routers
+DEFAULT_ADDR = '239.0.0.1'
+DEFAULT_PORT = 23901
+DEFAULT_TTL  = 5          ## no more than 5 hops through routers
 
 ## 19 Sep 2018 -- Note
 ##
@@ -47,18 +47,21 @@ class McastHandler(DatagramRequestHandler):
 
 class McastThread(Thread):
 
-    def __init__(self):
+    def __init__(self, cfg):
+        mcast_addr = cfg.get("mcast.addr", DEFAULT_ADDR)
+        mcast_port = cfg.get("mcast.port", DEFAULT_PORT)
+        mcast_ttl  = cfg.get("mcast.ttl", DEFAULT_TTL)
         Thread.__init__(self, name="McastServer")
-        self.server = UDPServer((MCAST_ADDR, MCAST_PORT), McastHandler)
+        self.server = UDPServer((mcast_addr, mcast_port), McastHandler)
         ## allow other processes to bind to this port+addr
         self.server.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         ## set packet TTL (hops)
-        ttl = struct.pack('b', MCAST_TTL)
+        ttl = struct.pack('b', mcast_ttl)
         self.server.socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
         ## disable receiving messages I send (no loopback)
         self.server.socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 0)
         ## join the multicast group
-        group = socket.inet_aton(MCAST_ADDR)
+        group = socket.inet_aton(mcast_addr)
         mreq = struct.pack('4sL', group, socket.INADDR_ANY)
         self.server.socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
         ##

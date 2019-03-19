@@ -9,9 +9,9 @@ DEFAULT_URL = "http://localhost:5000"
 
 class Client:
 
-    def __init__(self, base_url=DEFAULT_URL):
-        self.base_url = base_url
-        self.timeout  = 5.0
+    def __init__(self, config):
+        self.base_url = config.get('service-url', DEFAULT_URL)
+        self.timeout  = config.get('timeout', 5.0)
 
     def healthz(self):
         """Return the Service's health check -- verify's connectivity.

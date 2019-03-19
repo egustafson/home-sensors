@@ -1,5 +1,6 @@
 # Codex Ignores
-codexd-cfg.yml
+codex.yml
+codexd.yml
 
 
 # Virtualenv
