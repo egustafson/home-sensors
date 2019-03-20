@@ -5,21 +5,24 @@ import unittest
 
 from codex.config import Config
 
-from codex.cmdb.mem import MemoryCMDB
+from codex.cmdb import init_cmdb
 
-
-config = Config()
 
 class TestMemCMDB(unittest.TestCase):
 
     def test_construction(self):
-        cmdb = MemoryCMDB(config)
+        config = Config()
+        config['cmdb.type'] = 'memory'
+        cmdb = init_cmdb(config)
         self.assertIsNotNone(cmdb)
 
     def test_ci_operations(self):
-        cmdb = MemoryCMDB(config)
+        config = Config()
+        config['cmdb.type'] = 'memory'
+        cmdb = init_cmdb(config)
+
         self.assertEqual( len(cmdb.ci_list()), 0 )
-        oid = cmdb.ci_new(config)
+        oid = cmdb.ci_new(Config())
         # print("oid = {}".format(oid))
         cilist = cmdb.ci_list()
         self.assertEqual( len(cilist), 1)

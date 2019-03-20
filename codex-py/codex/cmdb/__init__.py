@@ -5,8 +5,12 @@ import uuid
 
 from codex.config import Config, ConfigItem
 
+from codex.cmdb.cmdb import CMDB
+from codex.cmdb.mem import MemoryDAO
+#from codex.cmdb.sqlite import SqliteDAO
 
-class CMDB(object):
+
+class OldCMDB(object):
 
     def __init__(self):
         self.configitems = { }
@@ -51,10 +55,13 @@ class CMDB(object):
 _cmdb = None
 
 
+class CmdbInitializationError(Exception):
+    pass
+
 def get_cmdb():
     global _cmdb
     if _cmdb is None:
-        init_cmdb()
+        raise CmdbInitializationError("CMDB not initialized.")
     return _cmdb
 
 
@@ -62,5 +69,17 @@ def init_cmdb(cfg=None):
     global _cmdb
     if _cmdb is not None:
         raise RuntimeError("CMDB already initialized.")
-    _cmdb = CMDB()
-    return True
+    if cfg is None:
+        _cmdb = OldCMDB()
+        return True
+    cmdb_type = cfg.get('cmdb.type')
+    if cmdb_type is None:
+        raise CmdbInitializationError("config does not define 'cmdb.type'")
+    if cmdb_type == 'memory':
+        dao = MemoryDAO(cfg.get('cmdb'))
+    if cmdb_type == 'sqlite':
+        # dao = SqliteDAO(cfg.get('cmdb'))
+        raise CmdbInitializationError('sqlite CMDB DAO not supported yet')
+    if dao is None:
+        raise CmdbInitializationError("Unknown cmdb.type ({})".format(cmdb_type))
+    return CMDB(dao, cfg.get('cmdb'))

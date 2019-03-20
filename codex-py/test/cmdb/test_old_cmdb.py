@@ -4,7 +4,7 @@
 import unittest
 import uuid
 
-from codex.cmdb import CMDB
+from codex.cmdb import OldCMDB as CMDB
 
 
 class TestOldCMDB(unittest.TestCase):
