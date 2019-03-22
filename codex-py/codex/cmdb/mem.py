@@ -103,6 +103,15 @@ class MemoryDAO(object):
         self._indexs = IndexDAO()
         self._mobjs = MObjsDAO()
 
+    def close(self):
+        pass
+
+    def reset(self):
+        self._configs = ConfigsDAO()
+        self._tags = TagsDAO()
+        self._indexs = IndexDAO()
+        self._mobjs = MObjsDAO()
+
     @property
     def configs(self):
         return self._configs

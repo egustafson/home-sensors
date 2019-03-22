@@ -26,6 +26,15 @@ class CMDB(object):
             return None
         return ver
 
+    def close(self):
+        self._dao.close()
+        self._dao = None
+        self._config = None
+
+    def reset(self):
+        self._dao.reset()
+        
+
     def ci_list(self):
         return self._dao.configs.get_list()
 

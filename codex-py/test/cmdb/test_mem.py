@@ -4,7 +4,6 @@
 import unittest
 
 from codex.config import Config
-
 from codex.cmdb import init_cmdb
 
 
@@ -15,6 +14,7 @@ class TestMemCMDB(unittest.TestCase):
         config['cmdb.type'] = 'memory'
         cmdb = init_cmdb(config)
         self.assertIsNotNone(cmdb)
+        cmdb.close()
 
     def test_ci_operations(self):
         config = Config()
@@ -33,3 +33,4 @@ class TestMemCMDB(unittest.TestCase):
         #     print("  {}: {},".format(k,v))
         # print("}")
         self.assertEqual( len(cfg), 2 )
+        cmdb.close()

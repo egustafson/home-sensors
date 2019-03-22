@@ -5,9 +5,10 @@ import uuid
 
 from codex.config import Config, ConfigItem
 
+from codex.cmdb.exceptions import CmdbInitializationError
 from codex.cmdb.cmdb import CMDB
-from codex.cmdb.mem import MemoryDAO
-#from codex.cmdb.sqlite import SqliteDAO
+from codex.cmdb.mem import MemoryDAO  ## TODO - fix to use init_dao()
+from codex.cmdb.dbapi import init_dao as dbapi_init_dao
 
 
 class OldCMDB(object):
@@ -54,10 +55,6 @@ class OldCMDB(object):
 
 _cmdb = None
 
-
-class CmdbInitializationError(Exception):
-    pass
-
 def get_cmdb():
     global _cmdb
     if _cmdb is None:
@@ -77,9 +74,9 @@ def init_cmdb(cfg=None):
         raise CmdbInitializationError("config does not define 'cmdb.type'")
     if cmdb_type == 'memory':
         dao = MemoryDAO(cfg.get('cmdb'))
-    if cmdb_type == 'sqlite':
-        # dao = SqliteDAO(cfg.get('cmdb'))
-        raise CmdbInitializationError('sqlite CMDB DAO not supported yet')
+    if cmdb_type == 'dbapi':
+        dao = dbapi_init_dao(cfg.get('cmdb'))
+        # raise CmdbInitializationError('sqlite CMDB DAO not supported yet')
     if dao is None:
         raise CmdbInitializationError("Unknown cmdb.type ({})".format(cmdb_type))
     return CMDB(dao, cfg.get('cmdb'))
