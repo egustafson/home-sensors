@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" UnitTest for Python DB-API (sqlite3) """
+""" UnitTest for SQL-DAO (SQLAlchemy) """
 
 import unittest
 
@@ -7,13 +7,12 @@ from codex.config import Config
 from codex.cmdb import init_cmdb
 
 
-class TestDbApiCMDB(unittest.TestCase):
+class TestSqlCMDB(unittest.TestCase):
 
     def test_construction(self):
         config = Config()
-        config['cmdb.type'] = 'dbapi'
-        config['cmdb.db-type'] = 'sqlite3'
-        config['cmdb.uri'] = ':memory:'
+        config['cmdb.type'] = 'sql'
+        config['cmdb.url'] = 'sqlite:///:memory:'
         cmdb = init_cmdb(config)
         self.assertIsNotNone(cmdb)
         cmdb.close()
