@@ -31,9 +31,11 @@ class CMDB(object):
         self._dao = None
         self._config = None
 
+    def dump(self):
+        self._dao.dump()
+
     def reset(self):
         self._dao.reset()
-        
 
     def ci_list(self):
         return self._dao.configs.get_list()

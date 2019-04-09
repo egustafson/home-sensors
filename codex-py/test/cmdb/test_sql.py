@@ -16,3 +16,10 @@ class TestSqlCMDB(unittest.TestCase):
         cmdb = init_cmdb(config)
         self.assertIsNotNone(cmdb)
         cmdb.close()
+
+    def test_dump(self):
+        config = Config()
+        config['cmdb.type'] = 'sql'
+        config['cmdb.url'] = 'sqlite:///:memory:'
+        cmdb = init_cmdb(config)
+        cmdb.dump()

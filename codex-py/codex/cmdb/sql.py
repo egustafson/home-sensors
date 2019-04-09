@@ -8,6 +8,7 @@ from codex.cmdb.exceptions import CmdbInitializationError
 
 from sqlalchemy import create_engine
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
+from sqlalchemy.sql import select
 
 metadata = MetaData()
 ciprops = Table('ciprops', metadata,
@@ -49,6 +50,24 @@ class SqlDAO(object):
         conn.execute(tags.delete())
         conn.execute(moprops.delete())
         conn.close()
+
+    def dump(self):
+        conn = self._engine.connect()
+        try:
+            rs = conn.execute(select([ciprops]))
+            print("Table: ciprops")
+            for row in rs:
+                print(row)
+            rs = conn.execute(select([tags]))
+            print("Table: tags")
+            for row in rs:
+                print(row)
+            rs = conn.execute(select([moprops]))
+            print("Table: moprops")
+            for ros in rs:
+                print(row)
+        finally:
+            conn.close()
 
 
 def init_dao(config):
