@@ -129,6 +129,23 @@ class PropMap(MutableMapping):
     def flatten(self):
         return self._flatten()
 
+    def as_properties():
+        #
+        # TODO
+        #
+        return []
+
+    def as_yaml():
+        #
+        # TODO
+        #
+        return ""
+
+    def as_json():
+        #
+        # TODO
+        #
+        return ""
 
     def dump(self, prefix=''):
         for (k, v) in self._data.items():
