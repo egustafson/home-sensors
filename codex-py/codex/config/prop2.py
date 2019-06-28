@@ -57,13 +57,42 @@ import re
 from collections import Iterable
 
 key_regex = "([\w\-]+)"
-idx_regex = "((\.?\[\d+\])|(\d+))"
-sfx_regex = "(\."+key_regex+")|("+idx_regex+")"
+idx_regex = "((\[\d+\])|(\d+))"
+sfx_regex = "(\."+key_regex+")|(\.?"+idx_regex+")"
 
 k_regex = "^(?P<key>"+key_regex+")(?P<sk>("+sfx_regex+")*)$"
 kre = re.compile(k_regex)
 i_regex = "^(?P<key>"+idx_regex+")(?P<sk>("+sfx_regex+")*)$"
 ire = re.compile(i_regex)
+
+def splitkey(key):
+    if isinstance(key, int):
+        return (key, None)
+    # else
+    m = ire.fullmatch(key)
+    if m is not None:
+        k = m.group('key')
+        sk = m.group('sk').lstrip('.')
+        if k is None:
+            raise KeyError(key)
+        return (int(k.strip('[]')), sk)
+    # else
+    m = kre.fullmatch(key)
+    if m is not None:
+        k = m.group('key')
+        sk = m.group('sk').lstrip('.')
+        if k is None:
+            raise KeyError(key)
+        return (k, sk)
+    # else
+    raise KeyError("Invalid key, '{}'".format(key))
+
+def mksubkeytype(subkey):
+    (k, sk) = splitkey(subkey)
+    if isinstance(k, int):
+        return PropList()
+    else:
+        return PropMap()
 
 class PropMap(Mapping):
 
@@ -85,19 +114,9 @@ class PropMap(Mapping):
             self._setitem(k,v)
         return self
 
-    def _splitkey(self, key):
-        m = kre.fullmatch(key)
-        if m is None:
-            raise KeyError("Invalid key, '{}'".format(key))
-        k = m.group('key')
-        sk = m.group('sk').lstrip('.')
-        if k is None:
-            raise KeyError(key)
-        return (k, sk)
-
     def __getitem__(self, key):
 #        print("getting: {}".format(key))
-        (k, sk) = self._splitkey(key)
+        (k, sk) = splitkey(key)
         if sk:
             #print("get recursing:  k='{}', sk='{}'".format(k, sk))
             return self._data[k][sk]
@@ -105,7 +124,7 @@ class PropMap(Mapping):
 
     def _setitem(self, key, value):
 #        print("PropMap._setitem:  {} = {}".format(key, value))
-        (k, sk) = self._splitkey(key)
+        (k, sk) = splitkey(key)
         v = value
         if isinstance(value, Mapping):
             v = PropMap().load(value)
@@ -113,8 +132,8 @@ class PropMap(Mapping):
             v = PropList().load(value)
         if sk:
             if k not in self._data:
-                self._data[k] = PropMap()
-                #print("created sub-map")
+                self._data[k] = mksubkeytype(sk)
+                #print("created sub-element")
             self._data[k]._setitem(sk,v)
         else:
             self._data[k] = v
@@ -135,6 +154,8 @@ class PropMap(Mapping):
             if len(prefix) > 0:
                 key = ".".join((prefix, k))
             if isinstance(v, PropMap):
+                flat.update( v._flatten(key) )
+            elif isinstance(v, PropList):
                 flat.update( v._flatten(key) )
             else:
                 flat[key] = v
@@ -185,21 +206,9 @@ class PropList(Sequence):
                     self._append(ii)
         return self
 
-    def _splitkey(self, key):
-        if isinstance(key, int):
-            return (key, None)
-        m = ire.fullmatch(key)
-        if m is None:
-            raise KeyError("Invalid key, '{}'".format(key))
-        k = m.group('key')
-        sk = m.group('sk').lstrip('.')
-        if k is None:
-            raise KeyError(key)
-        return (int(k.strip('[]') ), sk)
-
     def __getitem__(self, key):
 #        print("getting: {}".format(key))
-        (k, sk) = self._splitkey(key)
+        (k, sk) = splitkey(key)
         if sk:
             #print("getting recursing: k='{}', sk='{}'".format(k, sk))
             return self._data[k][sk]
@@ -207,7 +216,11 @@ class PropList(Sequence):
 
     def _setitem(self, key, value):
 #        print("setting: {}".format(key))
-        (k, sk) = self._splitkey(key)
+        (k, sk) = splitkey(key)
+        if not isinstance(k, int):
+            raise KeyError("Key is not an int")
+        while len(self._data) < k+1:
+            self._data.append(None)
         v = value
         if isinstance(value, Mapping):
             v = PropMap().load(value)
@@ -215,8 +228,8 @@ class PropList(Sequence):
             v = PropList().load(value)
         if sk:
             if k not in self._data:
-                self._data[k] = PropMap()
-                #print("created sub-map")
+                self._data[k] = mksubkeytype(sk)
+                #print("created sub-element")
             self._data[k]._setitem(sk,v)
         else:
             self._data[k] = v
@@ -233,5 +246,15 @@ class PropList(Sequence):
         return list.__repr__(list(self))
 
     def _flatten(self, prefix=''):
-        ## TBD
-        return []
+        flat = dict()
+        ii = 0
+        for v in self._data:
+            key = "{}[{}]".format(prefix, ii)
+            ii += 1
+            if isinstance(v, PropMap):
+                flat.update( v._flatten(key) )
+            elif isinstance(v, PropList):
+                flat.update( v._flatten(key) )
+            else:
+                flat[key] = v
+        return flat

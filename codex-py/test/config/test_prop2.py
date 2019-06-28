@@ -146,12 +146,15 @@ class TestPropList(unittest.TestCase):
         self.assertEqual( mm['a.0[0]'],  test_map['a'][0][0] )
         self.assertEqual( mm['a.2.1'], test_map['a'][2][1] )
 
-    @unittest.skip("index in middle of key - still broken")
+    #@unittest.skip("index in middle of key - still broken")
     def test_from_properties(self):
         test_map = {
-            'a[0]': 'a-zero',  # broken
-            'a[1]': 'a-one',   # broken
+            'a[0]': 'a-zero',
+            'a[1]': 'a-one',
             'a.2' : 'a-two',
             'b'   : 'bee'
         }
         mm = PropMap().load(test_map)
+        self.assertEqual( mm['a'][0], test_map['a[0]'])
+        self.assertEqual( mm['a'][1], test_map['a[1]'])
+        self.assertEqual( mm['a'][2], test_map['a.2'])
