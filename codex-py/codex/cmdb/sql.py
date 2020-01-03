@@ -110,7 +110,7 @@ class SqlDAO(object):
         # return: the version # of the appended config
         ver = self.cfg_ver_head(oid) + 1
         insert_list = []
-        for (k, v) in config.flatten():
+        for (k, v) in config.as_properties().items():
             insert_list.append(
                 {'oid': str(oid), 'ver': ver, 'key': k, 'val': v} )
         if len(insert_list) > 0:

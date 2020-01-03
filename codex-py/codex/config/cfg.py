@@ -24,9 +24,9 @@ from codex.config.prop import PropList
 
 class Config(PropMap):
     def __init__(self, *args, **kwargs):
+        self.load(*args, **kwargs)
         self._validated = False
         self._dirty = False
-        super().__init__(*args, **kwargs)
     @property
     def dirty(self):
         return self._dirty

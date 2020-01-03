@@ -10,15 +10,13 @@ from codex.cmdb import init_cmdb
 class TestMemCMDB(unittest.TestCase):
 
     def test_construction(self):
-        config = Config()
-        config['cmdb.type'] = 'memory'
+        config = Config({'cmdb.type': 'memory'})
         cmdb = init_cmdb(config)
         self.assertIsNotNone(cmdb)
         cmdb.close()
 
     def test_ci_operations(self):
-        config = Config()
-        config['cmdb.type'] = 'memory'
+        config = Config({'cmdb.type': 'memory'})
         cmdb = init_cmdb(config)
 
         self.assertEqual( len(cmdb.ci_list()), 0 )

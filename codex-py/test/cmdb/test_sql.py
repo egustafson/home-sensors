@@ -9,17 +9,19 @@ from codex.config import Config
 from codex.cmdb.sql import init_dao
 
 
+CMDB_CONFIG = {
+    'cmdb.type': 'sql',
+    'cmdb.url': 'sqlite:///:memory:'
+}
+
 class TestSqlDAO(unittest.TestCase):
 
     def setUp(self):
-        config = Config()
-        config['cmdb.type'] = 'sql'
-        config['cmdb.url'] = 'sqlite:///:memory:'
-        self.config = config
+        self.config = Config({
+            'cmdb.type': 'sql',
+            'cmdb.url': 'sqlite:///:memory:'})
         #
-        config = Config()
-        config['key'] = 'value'
-        self.t_cfg = config
+        self.t_cfg = Config({'key': 'value'})
 
     def getDao(self, config = None):
         if config is None:

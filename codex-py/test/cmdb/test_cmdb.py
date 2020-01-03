@@ -10,10 +10,8 @@ from codex.cmdb import init_cmdb
 class TestCMDB(unittest.TestCase):
 
     def setUp(self):
-        config = Config()
-        config['cmdb.type'] = 'sql'
-        config['cmdb.url'] = 'sqlite:///:memory:'
-        self.config = config
+        self.config = Config({ 'cmdb.type': 'sql',
+                               'cmdb.url': 'sqlite:///:memory:' })
 
     def test_construction(self):
         cmdb = init_cmdb(self.config)
@@ -24,7 +22,3 @@ class TestCMDB(unittest.TestCase):
         cmdb = init_cmdb(self.config)
         cmdb.dump()
         cmdb.close()
-
-#    def test_cfg_list(self):
-#        cmdb = init_cmdb(self.config)
-#        cmdb.close()
