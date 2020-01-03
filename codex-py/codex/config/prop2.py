@@ -56,13 +56,13 @@ class PropPath:
 import re
 from collections import Iterable
 
-key_regex = "([\w\-]+)"
-idx_regex = "((\[\d+\])|(\d+))"
-sfx_regex = "(\."+key_regex+")|(\.?"+idx_regex+")"
+key_regex = r'([\w\-]+)'
+idx_regex = r'((\[\d+\])|(\d+))'
+sfx_regex = r'(\.'+key_regex+r')|(\.?'+idx_regex+r')'
 
-k_regex = "^(?P<key>"+key_regex+")(?P<sk>("+sfx_regex+")*)$"
+k_regex = r'^(?P<key>'+key_regex+r')(?P<sk>('+sfx_regex+r')*)$'
 kre = re.compile(k_regex)
-i_regex = "^(?P<key>"+idx_regex+")(?P<sk>("+sfx_regex+")*)$"
+i_regex = r'^(?P<key>'+idx_regex+r')(?P<sk>('+sfx_regex+r')*)$'
 ire = re.compile(i_regex)
 
 def splitkey(key):

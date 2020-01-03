@@ -1,4 +1,4 @@
-.PHONY: all clean package test
+.PHONY: all clean init package test
 
 all: clean test
 
@@ -7,8 +7,12 @@ clean:
 	rm -f `find . -name '*.pyc'`
 	rm -f `find . -name '*.pyo'`
 
+init:
+	pip install -r requirements.txt
+
 test:
-	python -m unittest discover -v
+	pytest
+#	python -m unittest discover -v
 
 package:
 	python setup.py sdist

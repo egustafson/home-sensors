@@ -1,29 +1,19 @@
 # -*- coding: utf-8 -*-
-""" healthz endpoint """
+""" healthz application health object """
 
-from flask import Blueprint
-from flask import jsonify
 
-###
-
-class Healthz():
+class _Healthz():
 
     def status(self):
         return { 'status': "ok" }
 
-###
 
-_healthz = Healthz()
-
-def get_healthz():
-    return _healthz
+_HEALTHZ = None
 
 
-blueprint = Blueprint('healthz', __name__)
-
-@blueprint.route('/healthz')
-def healthz():
-    status = get_healthz().status()
-    return jsonify(status)
-
-
+def Healthz():
+    """ factory function to return singleton """
+    global _HEALTHZ
+    if _HEALTHZ is None:
+        _HEALTHZ = _Healthz()
+    return _HEALTHZ

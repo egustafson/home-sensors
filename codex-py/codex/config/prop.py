@@ -52,7 +52,7 @@ class PropPath:
 import re
 from collections import Iterable
 
-kre = re.compile("^([\w\-]+)(\.([\w\-]+))*$")
+kre = re.compile(r'^([\w\-]+)(\.([\w\-]+))*$')
 
 class PropMap(MutableMapping):
 
